@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'movie_screen.dart';
 import 'tickets_screen.dart';
 import 'profile_screen.dart';
+import 'movie_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -159,6 +160,7 @@ class _HomeContent extends StatelessWidget {
             itemCount: 5,
             itemBuilder: (context, index) {
               return _buildMovieCard(
+                context,
                 'Movie ${index + 1}',
                 'Action, Adventure',
                 '4.${5 + index}/5',
@@ -267,48 +269,63 @@ class _HomeContent extends StatelessWidget {
     );
   }
 
-  Widget _buildMovieCard(
-      String title, String genre, String rating, String imageAsset) {
-    return Container(
-      width: 160,
-      margin: const EdgeInsets.only(right: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              height: 200,
-              color: Colors.grey[300],
-              child: Center(child: Text('Movie Poster')),
-              // In a real app, use:
-              // Image.asset(imageAsset, fit: BoxFit.cover),
+  Widget _buildMovieCard(BuildContext context, String title, String genre,
+      String rating, String imageAsset) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MovieDetailScreen(
+              title: title,
+              genre: genre,
+              rating: rating,
+              imageAsset: imageAsset,
             ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            genre,
-            style: TextStyle(color: Colors.grey[600], fontSize: 12),
-          ),
-          const SizedBox(height: 4),
-          Row(
-            children: [
-              const Icon(Icons.star, color: Colors.amber, size: 16),
-              const SizedBox(width: 4),
-              Text(
-                rating,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+        );
+      },
+      child: Container(
+        width: 160,
+        margin: const EdgeInsets.only(right: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                height: 200,
+                color: Colors.grey[300],
+                child: Center(child: Text('Movie Poster')),
+                // In a real app, use:
+                // Image.asset(imageAsset, fit: BoxFit.cover),
               ),
-            ],
-          ),
-        ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              genre,
+              style: TextStyle(color: Colors.grey[600], fontSize: 12),
+            ),
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                const Icon(Icons.star, color: Colors.amber, size: 16),
+                const SizedBox(width: 4),
+                Text(
+                  rating,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
