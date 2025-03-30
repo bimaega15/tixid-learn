@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'cinema_selection_screen.dart';
 
 class MovieDetailScreen extends StatefulWidget {
   final String title;
@@ -20,6 +21,8 @@ class MovieDetailScreen extends StatefulWidget {
 
 class _MovieDetailScreenState extends State<MovieDetailScreen> {
   bool _isFavorite = false;
+  String _selectedDate = 'Today';
+  String _selectedTime = '';
 
   @override
   Widget build(BuildContext context) {
@@ -282,11 +285,11 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              _buildDateTab('Today', true),
+              _buildDateTab('Today', _selectedDate == 'Today'),
               const SizedBox(width: 8),
-              _buildDateTab('Tomorrow', false),
+              _buildDateTab('Tomorrow', _selectedDate == 'Tomorrow'),
               const SizedBox(width: 8),
-              _buildDateTab('Wed, 21 Dec', false),
+              _buildDateTab('Wed, 21 Dec', _selectedDate == 'Wed, 21 Dec'),
             ],
           ),
         ),
@@ -312,31 +315,52 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   }
 
   Widget _buildDateTab(String date, bool isSelected) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      decoration: BoxDecoration(
-        color: isSelected ? Colors.red : Colors.transparent,
-        borderRadius: BorderRadius.circular(8),
-        border: isSelected ? null : Border.all(color: Colors.grey),
-      ),
-      child: Text(
-        date,
-        style: TextStyle(
-          color: isSelected ? Colors.white : Colors.black,
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedDate = date;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.red : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          border: isSelected ? null : Border.all(color: Colors.grey),
+        ),
+        child: Text(
+          date,
+          style: TextStyle(
+            color: isSelected ? Colors.white : Colors.black,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          ),
         ),
       ),
     );
   }
 
   Widget _buildTimeSlot(String time) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(8),
+    bool isSelected = _selectedTime == time;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedTime = time;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.red : Colors.transparent,
+          border: Border.all(color: isSelected ? Colors.red : Colors.grey),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          time,
+          style: TextStyle(
+            color: isSelected ? Colors.white : Colors.black,
+          ),
+        ),
       ),
-      child: Text(time),
     );
   }
 
@@ -345,7 +369,21 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
-          // Navigate to booking screen
+          if (_selectedTime.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text('Please select a showtime first')));
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CinemaSelectionScreen(
+                  movieTitle: widget.title,
+                  date: _selectedDate,
+                  time: _selectedTime,
+                ),
+              ),
+            );
+          }
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.red,
