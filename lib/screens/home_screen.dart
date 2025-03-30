@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'movie_screen.dart';
+import 'tickets_screen.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -10,45 +13,38 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
+  static final List<Widget> _screens = [
+    const _HomeContent(),
+    const MovieScreen(),
+    const TicketsScreen(),
+    const ProfileScreen(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        title: const Text('CineTickets',
-            style: TextStyle(fontWeight: FontWeight.bold)),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              // Add search functionality
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.notifications_none),
-            onPressed: () {
-              // Add notifications functionality
-            },
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildLocationBar(),
-              const SizedBox(height: 24),
-              _buildNowShowingSection(),
-              const SizedBox(height: 24),
-              _buildUpcomingMoviesSection(),
-              const SizedBox(height: 24),
-              _buildPromoSection(),
-            ],
-          ),
-        ),
-      ),
+      appBar: _selectedIndex == 0
+          ? AppBar(
+              title: const Text('CineTickets',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: () {
+                    // Add search functionality
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.notifications_none),
+                  onPressed: () {
+                    // Add notifications functionality
+                  },
+                ),
+              ],
+            )
+          : null,
+      body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) {
@@ -77,6 +73,31 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Profile',
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _HomeContent extends StatelessWidget {
+  const _HomeContent({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildLocationBar(),
+            const SizedBox(height: 24),
+            _buildNowShowingSection(),
+            const SizedBox(height: 24),
+            _buildUpcomingMoviesSection(),
+            const SizedBox(height: 24),
+            _buildPromoSection(),
+          ],
+        ),
       ),
     );
   }
